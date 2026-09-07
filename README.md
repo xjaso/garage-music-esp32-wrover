@@ -134,6 +134,25 @@ Riešenie:
 5. ESP32 nechaj pripojené ako ovládač / metadata zariadenie.
 
 ---
+## Fotky / Photos
+
+### Technický náhľad / Technical overview
+
+![Garage Music technical overview](docs/media/garage_music_infographic.png)
+
+### Zapnuty stav / Powered On
+
+![Garage Music front on](docs/media/garage_music_front_on.jpg)
+
+
+
+### Vypnutý stav / Powered off
+
+![Garage Music front off](docs/media/garage_music_front_off.jpg)
+
+## Video / Demo
+
+[Demo video](docs/media/garage_music_demo.mp4)
 # 🇬🇧 English
 
 ## What it is used for
