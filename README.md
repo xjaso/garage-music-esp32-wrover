@@ -142,13 +142,13 @@ Riešenie:
 
 ### Zapnuty stav / Powered On
 
-![Garage Music front on](docs/media/garage_music_front_on.jpg)
+![Garage Music front on](docs/media/garage_music_front_on.jpeg)
 
 
 
 ### Vypnutý stav / Powered off
 
-![Garage Music front off](docs/media/garage_music_front_off.jpg)
+![Garage Music front off](docs/media/garage_music_front_off.jpeg)
 
 ## Video / Demo
 
