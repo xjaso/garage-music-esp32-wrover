@@ -119,3 +119,348 @@ And then, the LCD screen will display the cover art image.
 ## Troubleshooting
 
 For any technical queries, please open an [issue](https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
+# Garage Music ESP32 WROVER
+
+## 🇸🇰 Slovensky
+
+Bluetooth Classic ovládač hudby do garáže.
+
+Projekt používa ESP32-WROVER s PSRAM, ST7789 displej, LVGL UI, AVRCP metadata, album art, HID media tlačidlá a vypínanie napájania cez Pololu power switch.
+
+---
+
+## Hardware
+
+- ESP32-WROVER
+- ST7789 320x240 SPI display
+- Rotary encoder
+- NEXT / PREV tlačidlá
+- Pololu 2808 Mini Pushbutton Power Switch LV
+- Mean Well IRM-10-5 5V zdroj
+
+---
+
+## Pinout
+
+### ST7789 display
+
+| Funkcia | GPIO |
+|---|---|
+| MOSI | GPIO23 |
+| SCK | GPIO18 |
+| CS | GPIO5 |
+| DC | GPIO21 |
+| RST | GPIO22 |
+| BL | GPIO13 |
+
+### Ovládanie
+
+| Funkcia | GPIO |
+|---|---|
+| Encoder A | GPIO32 |
+| Encoder B | GPIO33 |
+| Encoder SW | GPIO14 |
+| NEXT | GPIO19 |
+| PREV / PLAY | GPIO25 |
+| Pololu OFF | GPIO27 |
+
+---
+
+## Funkcie tlačidiel
+
+| Akcia | Funkcia |
+|---|---|
+| Encoder doprava | Volume Up |
+| Encoder doľava | Volume Down |
+| Encoder click | Play / Pause |
+| Encoder hold | Mute |
+| NEXT click | Next Track |
+| NEXT hold | Reconnect / Pairing |
+| PREV click | Previous Track |
+| PREV hold | Power off cez Pololu GPIO27 |
+
+---
+
+## Zapojenie Pololu 2808
+
+```text
+5V zdroj +  -> Pololu VIN
+5V zdroj -  -> Pololu GND
+
+Pololu VOUT -> ESP32 5V/VIN
+Pololu GND  -> ESP32 GND
+
+Power tlačidlo -> Pololu A-B
+ESP GPIO27     -> Pololu OFF
+```
+
+Piny `ON` a `CTRL` sa nepoužívajú.
+
+---
+
+## Ako nahrať firmware do ESP32
+
+Otvor **ESP-IDF PowerShell**.
+
+### 1. Stiahni projekt
+
+```powershell
+cd C:\ESP32
+git clone https://github.com/xjaso/garage-music-esp32-wrover.git
+cd garage-music-esp32-wrover
+```
+
+Ak už projekt máš:
+
+```powershell
+cd C:\ESP32\garage-music-esp32-wrover
+git pull
+```
+
+### 2. Zisti COM port
+
+```powershell
+Get-CimInstance Win32_SerialPort | Select-Object DeviceID,Name
+```
+
+Príklad:
+
+```text
+COM9  USB-SERIAL CH9102
+```
+
+### 3. Vyčisti build
+
+```powershell
+Remove-Item -Recurse -Force .\build -ErrorAction SilentlyContinue
+```
+
+### 4. Nastav target
+
+```powershell
+idf.py set-target esp32
+```
+
+### 5. Build
+
+```powershell
+idf.py build
+```
+
+### 6. Flash do ESP32
+
+```powershell
+idf.py -p COM9 -b 115200 flash
+```
+
+Ak máš iný port, zmeň `COM9`.
+
+### 7. Monitor
+
+```powershell
+idf.py -p COM9 -b 115200 monitor
+```
+
+Ukončenie monitora:
+
+```text
+Ctrl + ]
+```
+
+---
+
+## Čo má byť v logu
+
+Po štarte má byť vidieť napríklad:
+
+```text
+SPI Flash Size : 8MB
+Found 4MB PSRAM device
+PSRAM initialized
+GARAGE_INPUT: Inputs started
+LVGL 8 UI started
+Bluetooth init
+HIDD register app OK
+```
+
+---
+
+## Poznámky
+
+Nepoužívať GPIO16/GPIO17 na ESP32-WROVER, lebo súvisia s PSRAM.
+
+Pre tento firmware je potrebný **Bluetooth Classic**. ESP32-S3, ESP32-C3, ESP32-C6 a ESP32-S2 nie sú vhodné pre tento projekt.
+
+---
+
+---
+
+# 🇬🇧 English
+
+Bluetooth Classic garage music controller.
+
+This project uses ESP32-WROVER with PSRAM, ST7789 display, LVGL UI, AVRCP metadata, album cover art, HID media keys and power-off control through a Pololu power switch.
+
+---
+
+## Hardware
+
+- ESP32-WROVER
+- ST7789 320x240 SPI display
+- Rotary encoder
+- NEXT / PREV buttons
+- Pololu 2808 Mini Pushbutton Power Switch LV
+- Mean Well IRM-10-5 5V power supply
+
+---
+
+## Pinout
+
+### ST7789 display
+
+| Function | GPIO |
+|---|---|
+| MOSI | GPIO23 |
+| SCK | GPIO18 |
+| CS | GPIO5 |
+| DC | GPIO21 |
+| RST | GPIO22 |
+| BL | GPIO13 |
+
+### Controls
+
+| Function | GPIO |
+|---|---|
+| Encoder A | GPIO32 |
+| Encoder B | GPIO33 |
+| Encoder SW | GPIO14 |
+| NEXT | GPIO19 |
+| PREV / PLAY | GPIO25 |
+| Pololu OFF | GPIO27 |
+
+---
+
+## Button functions
+
+| Action | Function |
+|---|---|
+| Encoder clockwise | Volume Up |
+| Encoder counter-clockwise | Volume Down |
+| Encoder click | Play / Pause |
+| Encoder hold | Mute |
+| NEXT click | Next Track |
+| NEXT hold | Reconnect / Pairing |
+| PREV click | Previous Track |
+| PREV hold | Power off through Pololu GPIO27 |
+
+---
+
+## Pololu 2808 wiring
+
+```text
+5V power supply +  -> Pololu VIN
+5V power supply -  -> Pololu GND
+
+Pololu VOUT        -> ESP32 5V/VIN
+Pololu GND         -> ESP32 GND
+
+Power button       -> Pololu A-B
+ESP GPIO27         -> Pololu OFF
+```
+
+Pins `ON` and `CTRL` are not used.
+
+---
+
+## How to flash firmware to ESP32
+
+Open **ESP-IDF PowerShell**.
+
+### 1. Clone the project
+
+```powershell
+cd C:\ESP32
+git clone https://github.com/xjaso/garage-music-esp32-wrover.git
+cd garage-music-esp32-wrover
+```
+
+If the project is already cloned:
+
+```powershell
+cd C:\ESP32\garage-music-esp32-wrover
+git pull
+```
+
+### 2. Check the COM port
+
+```powershell
+Get-CimInstance Win32_SerialPort | Select-Object DeviceID,Name
+```
+
+Example:
+
+```text
+COM9  USB-SERIAL CH9102
+```
+
+### 3. Clean previous build
+
+```powershell
+Remove-Item -Recurse -Force .\build -ErrorAction SilentlyContinue
+```
+
+### 4. Set target
+
+```powershell
+idf.py set-target esp32
+```
+
+### 5. Build
+
+```powershell
+idf.py build
+```
+
+### 6. Flash to ESP32
+
+```powershell
+idf.py -p COM9 -b 115200 flash
+```
+
+Change `COM9` if your board uses another port.
+
+### 7. Monitor
+
+```powershell
+idf.py -p COM9 -b 115200 monitor
+```
+
+Exit monitor:
+
+```text
+Ctrl + ]
+```
+
+---
+
+## Expected boot log
+
+After boot, the log should contain something like:
+
+```text
+SPI Flash Size : 8MB
+Found 4MB PSRAM device
+PSRAM initialized
+GARAGE_INPUT: Inputs started
+LVGL 8 UI started
+Bluetooth init
+HIDD register app OK
+```
+
+---
+
+## Notes
+
+Do not use GPIO16/GPIO17 on ESP32-WROVER because they are related to PSRAM.
+
+This firmware requires **Bluetooth Classic**. ESP32-S3, ESP32-C3, ESP32-C6 and ESP32-S2 are not suitable for this project.
